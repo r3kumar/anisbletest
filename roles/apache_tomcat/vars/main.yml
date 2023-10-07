@@ -1,0 +1,4 @@
+# roles/apache_tomcat/vars/main.yml
+---
+tomcat_version: "8.5.93"
+tomcat_download_url: "https://dlcdn.apache.org/tomcat/tomcat-8/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"

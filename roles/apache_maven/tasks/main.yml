@@ -1,0 +1,45 @@
+# roles/maven/tasks/main.yml
+---
+- name: Install default JDK
+  apt:
+    name: default-jdk
+    state: present
+
+- name: Download Maven
+  get_url:
+    url: "{{ maven_download_url }}"
+    dest: "/tmp/apache-maven-{{ maven_version }}-bin.tar.gz"
+
+- name: Ensure /opt/maven is available
+  file:
+    path: /opt/maven
+    state: directory
+
+- name: Unpack Maven
+  unarchive:
+    src: "/tmp/apache-maven-{{ maven_version }}-bin.tar.gz"
+    dest: /opt/maven
+    remote_src: yes
+
+- name: Set the symlink for latest maven
+  file:
+    src: "/opt/maven/apache-maven-{{ maven_version }}"
+    dest: /opt/maven/latest
+    state: link
+
+- name: Set Maven environment variables
+  lineinfile:
+    path: /etc/environment
+    regexp: '^MAVEN_HOME='
+    line: 'MAVEN_HOME="/opt/maven/latest"'
+    state: present
+  become: yes
+
+- name: Add Maven to PATH
+  lineinfile:
+    path: /etc/environment
+    regexp: 'PATH="'
+    insertafter: 'PATH="'
+    line: '/opt/maven/latest/bin:'
+    state: present
+  become: yes

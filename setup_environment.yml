@@ -1,0 +1,7 @@
+# setup_environment.yml
+---
+- hosts: all
+  become: yes
+  roles:
+    - apache_tomcat
+    - apache_maven
